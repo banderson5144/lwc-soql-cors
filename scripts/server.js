@@ -66,7 +66,16 @@ app.get('/oauth2/callback', function(req, res) {
     var code = req.query.code;
     conn.authorize(code, function(err, userInfo) {
         if (err) { return console.error(err); }        
-    }).then(uRes =>{
+    })
+    .then(uRes => {
+        let corsHeroku = [{
+            developerName:'HerokuEntry',
+            urlPattern: new URL(process.env.REDIRECT_URI).origin
+        }];
+
+        return conn.metadata.create('CorsWhitelistOrigin',corsHeroku);
+    })
+    .then(uRes =>{
         console.log(conn.accessToken);
         console.log(conn.instanceUrl);
         res
