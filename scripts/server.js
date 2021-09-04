@@ -67,21 +67,22 @@ app.get('/oauth2/callback', function(req, res) {
     conn.authorize(code, function(err, userInfo) {
         if (err) { return console.error(err); }        
     })
-    .then(uRes => {
+    .then(uRes =>{
         let corsHeroku = [{
             developerName:'HerokuEntry',
             urlPattern: new URL(process.env.REDIRECT_URI).origin
         }];
 
-        return conn.metadata.create('CorsWhitelistOrigin',corsHeroku);
-    })
-    .then(uRes =>{
-        console.log(conn.accessToken);
-        console.log(conn.instanceUrl);
-        res
-        .cookie('mySess',conn.accessToken)
-        .cookie('myServ',conn.instanceUrl)
-        .redirect('/')
+        conn.metadata.create('CorsWhitelistOrigin',corsHeroku)
+        .then(mRes => {
+            console.log(conn.accessToken);
+            console.log(conn.instanceUrl);
+            res
+            .cookie('mySess',conn.accessToken)
+            .cookie('myServ',conn.instanceUrl)
+            .redirect('/');
+        });
+
         // conn.tooling.query("Select Title,SupportsRevoke,IsReleased,DueDate,Description,DeveloperName,Status,Release,ReleaseLabel,ReleaseDate From ReleaseUpdate WHERE DeveloperName = 'AuraSecStaticResCRUC'")
         // .then(qRes =>{
         //     console.log(qRes.records[0]);
