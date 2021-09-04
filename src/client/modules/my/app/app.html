@@ -1,0 +1,53 @@
+<template>
+    <template if:true={isSet}>
+        <lightning-layout horizontal-align="center">
+            <lightning-layout-item size="8" padding="around-small">
+                <div style="height: 300px">
+                    <lightning-datatable
+                        key-field="id"
+                        data={data}
+                        columns={columns}
+                    >
+                    </lightning-datatable>
+                </div>
+            </lightning-layout-item>
+        </lightning-layout>
+
+        <lightning-layout horizontal-align="center">
+            <lightning-layout-item size="8" padding="around-small">
+                <lightning-textarea
+                    name="soqlStr"
+                    label="SOQL String"
+                    value={soqlStr}
+                    onchange={handleChange}
+                ></lightning-textarea>
+                <lightning-button
+                        variant="brand"
+                        label="Run Query"
+                        title="Run Query"
+                        onclick={callQuery}
+                    ></lightning-button>
+            </lightning-layout-item>
+        </lightning-layout>
+    </template>
+    <!-- Usage Considerations: lightning-layout is not supported in Microsoft Edge and IE11.
+    To create a flexible grid system for these browsers, use <div> containers with SLDS grid classes. -->
+
+    <lightning-layout horizontal-align="center">
+        <lightning-layout-item size="8" padding="around-small">
+            <template if:false={isSet}>
+                <p><lightning-formatted-text value="Please login to your Salesforce Org" ></lightning-formatted-text></p>
+                <a
+                    class="slds-button slds-button_brand"
+                    href="/oauth2/auth?isSandbox=false"
+                    >Production</a
+                >
+                <a
+                    class="slds-button slds-button_outline-brand"
+                    href="/oauth2/auth?isSandbox=true"
+                    >Sandbox</a
+                >
+            </template>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>

@@ -1,0 +1,13 @@
+{
+    "env":{
+        "CLIENT_ID":{
+            "description": "Consumer Key from Connected App in Salesforce"
+        },
+        "CLIENT_SECRET":{
+            "description": "Consumer Secret from Connected App in Salesforce"
+        },
+        "REDIRECT_URI":{
+            "description": "Redirect URL from Connected App in Salesforce"
+        }
+    }
+}
