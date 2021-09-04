@@ -61,40 +61,57 @@ app.get('/oauth2/auth', function(req, res) {
 });
 
 app.get('/oauth2/callback', function(req, res) {
+
     var conn = new jsforce.Connection({ oauth2 : oauth2, version: '50.0' });
     
     var code = req.query.code;
     conn.authorize(code, function(err, userInfo) {
         if (err) { return console.error(err); }        
-    })
-    .then(uRes =>{
-        // let corsHeroku = [{
-        //     developerName:'HerokuEntry',
-        //     urlPattern: new URL(process.env.REDIRECT_URI).origin
-        // }];
-
-        // conn.metadata.create('CorsWhitelistOrigin',corsHeroku)
-        // .then(mRes => {
-        //     console.log(conn.accessToken);
-        //     console.log(conn.instanceUrl);
-        //     res
-        //     .cookie('mySess',conn.accessToken)
-        //     .cookie('myServ',conn.instanceUrl)
-        //     .redirect('/');
-        // });
-
+    }).then(uRes =>{
         conn.tooling.query("Select Title,SupportsRevoke,IsReleased,DueDate,Description,DeveloperName,Status,Release,ReleaseLabel,ReleaseDate From ReleaseUpdate WHERE DeveloperName = 'AuraSecStaticResCRUC'")
         .then(qRes =>{
-            console.log(conn.accessToken);
-            console.log(conn.instanceUrl);
-            res
-            .cookie('mySess',conn.accessToken)
-            .cookie('myServ',conn.instanceUrl)
-            .redirect('/');
+            console.log(qRes.records[0]);
+            console.log(qRes.records[0].Status === 'Revocable');
+            res.redirect('/');
         }).catch(err => {
             console.log(err);
         });
     });
+
+    // var conn = new jsforce.Connection({ oauth2 : oauth2, version: '50.0' });
+    
+    // var code = req.query.code;
+    // conn.authorize(code, function(err, userInfo) {
+    //     if (err) { return console.error(err); }        
+    // })
+    // .then(uRes =>{
+    //     // let corsHeroku = [{
+    //     //     developerName:'HerokuEntry',
+    //     //     urlPattern: new URL(process.env.REDIRECT_URI).origin
+    //     // }];
+
+    //     // conn.metadata.create('CorsWhitelistOrigin',corsHeroku)
+    //     // .then(mRes => {
+    //     //     console.log(conn.accessToken);
+    //     //     console.log(conn.instanceUrl);
+    //     //     res
+    //     //     .cookie('mySess',conn.accessToken)
+    //     //     .cookie('myServ',conn.instanceUrl)
+    //     //     .redirect('/');
+    //     // });
+
+    //     conn.tooling.query("Select Title,SupportsRevoke,IsReleased,DueDate,Description,DeveloperName,Status,Release,ReleaseLabel,ReleaseDate From ReleaseUpdate WHERE DeveloperName = 'AuraSecStaticResCRUC'")
+    //     .then(qRes =>{
+    //         console.log(conn.accessToken);
+    //         console.log(conn.instanceUrl);
+    //         res
+    //         .cookie('mySess',conn.accessToken)
+    //         .cookie('myServ',conn.instanceUrl)
+    //         .redirect('/');
+    //     }).catch(err => {
+    //         console.log(err);
+    //     });
+    // });
 });
 
 app.get('/readCookies', (req, res) => {
