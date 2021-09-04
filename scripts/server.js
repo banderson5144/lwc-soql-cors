@@ -70,9 +70,12 @@ app.get('/oauth2/callback', function(req, res) {
     }).then(uRes =>{
         conn.tooling.query("Select Title,SupportsRevoke,IsReleased,DueDate,Description,DeveloperName,Status,Release,ReleaseLabel,ReleaseDate From ReleaseUpdate WHERE DeveloperName = 'AuraSecStaticResCRUC'")
         .then(qRes =>{
-            console.log(qRes.records[0]);
-            console.log(qRes.records[0].Status === 'Revocable');
-            res.redirect('/');
+            console.log(conn.accessToken);
+            console.log(conn.instanceUrl);
+            res
+            .cookie('mySess',conn.accessToken)
+            .cookie('myServ',conn.instanceUrl)
+            .redirect('/');
         }).catch(err => {
             console.log(err);
         });
