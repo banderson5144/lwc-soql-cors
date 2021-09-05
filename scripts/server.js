@@ -41,13 +41,6 @@ app.use(function (req, res, next) {
 });
 app.use(express.static(DIST_DIR));
 
-// app.get('/', (req, res) => {
-//     console.log('somegisg')
-//     res.setHeader('X-Foo','bar');
-//     res.sendFile(path.resolve(DIST_DIR, 'index.html'));
-// });
-
-
 app.get('/barpath', (req, res) => {
     res.send('this is the path');
 });
@@ -61,60 +54,38 @@ app.get('/oauth2/auth', function(req, res) {
 });
 
 app.get('/oauth2/callback', function(req, res) {
-
     var conn = new jsforce.Connection({ oauth2 : oauth2, version: '50.0' });
     
     var code = req.query.code;
-    conn.authorize(code, function(err, userInfo) {
-        if (err) { return console.error(err); }        
-    }).then(uRes =>{
-        conn.tooling.query("Select Title,SupportsRevoke,IsReleased,DueDate,Description,DeveloperName,Status,Release,ReleaseLabel,ReleaseDate From ReleaseUpdate WHERE DeveloperName = 'AuraSecStaticResCRUC'")
-        .then(qRes =>{
+    conn.authorize(code)
+    .then(uRes =>{
+        console.log(process.env.REDIRECT_URI);
+        let corsUrl = new URL(process.env.REDIRECT_URI);
+        console.log(corsUrl.origin);
+        let metadata = [{
+            fullName: 'HerokuTest',
+            urlPattern: corsUrl.origin
+        }];
+        conn.metadata.create('CorsWhitelistOrigin', metadata)
+        .then(mRes =>{
+            console.log(mRes);
             console.log(conn.accessToken);
             console.log(conn.instanceUrl);
             res
             .cookie('mySess',conn.accessToken)
             .cookie('myServ',conn.instanceUrl)
             .redirect('/');
-        }).catch(err => {
+        })
+        .catch(err =>{
             console.log(err);
+            console.log(conn.accessToken);
+            console.log(conn.instanceUrl);
+            res
+            .cookie('mySess',conn.accessToken)
+            .cookie('myServ',conn.instanceUrl)
+            .redirect('/');
         });
     });
-
-    // var conn = new jsforce.Connection({ oauth2 : oauth2, version: '50.0' });
-    
-    // var code = req.query.code;
-    // conn.authorize(code, function(err, userInfo) {
-    //     if (err) { return console.error(err); }        
-    // })
-    // .then(uRes =>{
-    //     // let corsHeroku = [{
-    //     //     developerName:'HerokuEntry',
-    //     //     urlPattern: new URL(process.env.REDIRECT_URI).origin
-    //     // }];
-
-    //     // conn.metadata.create('CorsWhitelistOrigin',corsHeroku)
-    //     // .then(mRes => {
-    //     //     console.log(conn.accessToken);
-    //     //     console.log(conn.instanceUrl);
-    //     //     res
-    //     //     .cookie('mySess',conn.accessToken)
-    //     //     .cookie('myServ',conn.instanceUrl)
-    //     //     .redirect('/');
-    //     // });
-
-    //     conn.tooling.query("Select Title,SupportsRevoke,IsReleased,DueDate,Description,DeveloperName,Status,Release,ReleaseLabel,ReleaseDate From ReleaseUpdate WHERE DeveloperName = 'AuraSecStaticResCRUC'")
-    //     .then(qRes =>{
-    //         console.log(conn.accessToken);
-    //         console.log(conn.instanceUrl);
-    //         res
-    //         .cookie('mySess',conn.accessToken)
-    //         .cookie('myServ',conn.instanceUrl)
-    //         .redirect('/');
-    //     }).catch(err => {
-    //         console.log(err);
-    //     });
-    // });
 });
 
 app.get('/readCookies', (req, res) => {
