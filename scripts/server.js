@@ -34,9 +34,9 @@ app.use(compression());
 app.use(cors());
 app.use(function (req, res, next) {
     console.log(req.url);
-    console.log(req.cookies);
     if (req.url === '/') {
-        res.set('Content-Security-Policy', 'connect-src '+decodeURIComponent(req.cookies.myServ));
+        console.log(req.cookies.myServ);
+        res.set('Content-Security-Policy', 'connect-src '+req.cookies.myServ);
     }
     next();
 });
