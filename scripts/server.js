@@ -41,7 +41,9 @@ app.use(function (req, res, next) {
     }
     next();
 });
-app.use(express.static(DIST_DIR));
+app.use(express.static(DIST_DIR,{
+    etag: false
+  }));
 
 // //
 // // Get authorization url and redirect to it.
