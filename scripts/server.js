@@ -33,6 +33,10 @@ app.use(cookieParser());
 app.use(helmet());
 app.use(compression());
 app.use(cors());
+app.use(function(req, res, next) {
+    req.headers['if-none-match'] = 'no-match-for-this';
+    next();    
+  });
 app.use(function (req, res, next) {
     console.log(req.url);
     if (req.url === '/') {
@@ -74,7 +78,7 @@ app.get('/oauth2/callback', function(req, res) {
             res.cookie('mySess',conn.accessToken);
             res.cookie('myServ',conn.instanceUrl);
             res.set('Content-Security-Policy', 'connect-src '+conn.instanceUrl);
-            res.redirect(200,'/');
+            res.redirect('/');
         })
         .catch(err =>{
             console.log(err);
@@ -83,7 +87,7 @@ app.get('/oauth2/callback', function(req, res) {
             res.cookie('mySess',conn.accessToken);
             res.cookie('myServ',conn.instanceUrl);
             res.set('Content-Security-Policy', 'connect-src '+conn.instanceUrl);
-            res.redirect(200,'/');
+            res.redirect('/');
         });
     });
 });
