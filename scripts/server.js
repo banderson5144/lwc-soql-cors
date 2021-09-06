@@ -67,21 +67,19 @@ app.get('/oauth2/callback', function(req, res) {
             console.log(mRes);
             console.log(conn.accessToken);
             console.log(conn.instanceUrl);
-            res
-            .cookie('mySess',conn.accessToken)
-            .cookie('myServ',conn.instanceUrl)
-            .set('Content-Security-Policy', 'connect-src '+conn.instanceUrl)
-            .redirect('/');
+            res.cookie('mySess',conn.accessToken);
+            res.cookie('myServ',conn.instanceUrl);
+            res.set('Content-Security-Policy', 'connect-src '+conn.instanceUrl);
+            res.redirect('/');
         })
         .catch(err =>{
             console.log(err);
             console.log(conn.accessToken);
             console.log(conn.instanceUrl);
-            res
-            .cookie('mySess',conn.accessToken)
-            .cookie('myServ',conn.instanceUrl)
-            .set('Content-Security-Policy', 'connect-src '+conn.instanceUrl)
-            .redirect('/');
+            res.cookie('mySess',conn.accessToken);
+            res.cookie('myServ',conn.instanceUrl);
+            res.set('Content-Security-Policy', 'connect-src '+conn.instanceUrl);
+            res.redirect('/');
         });
     });
 });
