@@ -35,7 +35,7 @@ app.use(cors());
 app.use(function (req, res, next) {
     console.log(req.url);
     if (req.url === '/') {
-        res.set('Content-Security-Policy', 'connect-src '+decodeURIComponent(req.cookies.myServ));
+        res.set('Content-Security-Policy', 'connect-src '+decodeURIComponent(new URL(process.env.REDIRECT_URI).origin));
     }
     next();
 });
@@ -70,6 +70,7 @@ app.get('/oauth2/callback', function(req, res) {
             res
             .cookie('mySess',conn.accessToken)
             .cookie('myServ',conn.instanceUrl)
+            .set('Content-Security-Policy', 'connect-src '+decodeURIComponent(new URL(process.env.REDIRECT_URI).origin))
             .redirect('/');
         })
         .catch(err =>{
@@ -79,6 +80,7 @@ app.get('/oauth2/callback', function(req, res) {
             res
             .cookie('mySess',conn.accessToken)
             .cookie('myServ',conn.instanceUrl)
+            .set('Content-Security-Policy', 'connect-src '+decodeURIComponent(new URL(process.env.REDIRECT_URI).origin))
             .redirect('/');
         });
     });
