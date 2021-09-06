@@ -41,10 +41,6 @@ app.use(function (req, res, next) {
 });
 app.use(express.static(DIST_DIR));
 
-app.get('/barpath', (req, res) => {
-    res.send('this is the path');
-});
-
 // //
 // // Get authorization url and redirect to it.
 // //
@@ -66,7 +62,7 @@ app.get('/oauth2/callback', function(req, res) {
             fullName: 'HerokuTest',
             urlPattern: corsUrl.origin
         }];
-        conn.metadata.create('CorsWhitelistOrigin', metadata)
+        conn.metadata.upsert('CorsWhitelistOrigin', metadata)
         .then(mRes =>{
             console.log(mRes);
             console.log(conn.accessToken);
