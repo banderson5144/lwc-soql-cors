@@ -28,6 +28,7 @@ const PORT = process.env.PORT || 3001;
 const DIST_DIR = './dist';
 
 const app = express();
+app.disable('etag');
 app.use(cookieParser());
 app.use(helmet());
 app.use(compression());
